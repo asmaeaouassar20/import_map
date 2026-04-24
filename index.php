@@ -69,7 +69,7 @@ unset($_SESSION['error'], $_SESSION['success']);
     <!-- Header -->
     <div class="text-center mb-5">
         <h1 class="display-4 fw-bold text-datk">
-            <i class="bi bi-database-fill"></i> ImportFlow
+            algostyle
         </h1>
         <p class="text-dark-50 lead">Importez vos fichiers Excel vers votre base de données</p>
     </div>
