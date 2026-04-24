@@ -17,7 +17,8 @@ composer install
 ```
 Cela installera **PhpSpreadsheet** pour lire les fichiers Excel.
 
-### 3. Créer un fichier db.php contenant vos identifiants
+### 3. dbconfig.php
+Créer un fichier dbconfig.php dans le dossier includes. dbconfig.php contenant vos identifiants
 
 ### 4. Configuration de la base de données
 Ouvrez `includes/db.php` et renseignez vos informations :
