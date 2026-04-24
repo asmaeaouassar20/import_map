@@ -1,0 +1,12 @@
+# dossier inutile et très lourd, on peut le recérer avce composer install
+/vendor/  
+
+# ce dossier contient les fichiers temporaires des utilisateurs
+/uploads/*
+
+# garder le dossier uploads/ vide sur GitHub
+!uploads/.gitkeep
+dbconfig.php
+
+#ignorer tout fichier .env (config sensible)
+*.env
