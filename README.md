@@ -26,11 +26,3 @@ define('DB_USER', 'votre_utilisateur');
 define('DB_PASS', 'votre_mot_de_passe');
 ```
 
-### 4. Permissions
-```bash
-chmod 755 uploads/
-```
-Ça donne le droit au serveur d’écrire dans le dossier uploads/ (car les fichiers Excel seront upload là)
-
-
-
