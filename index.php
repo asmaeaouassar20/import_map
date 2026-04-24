@@ -41,7 +41,9 @@ unset($_SESSION['error'], $_SESSION['success']);
         transition: all 0.3s;
         background: #f8f9fa;
     }
-    
+    .text-primary{
+        font-size: 20px;
+    }
     .file-drop-zone:hover {
         border-color: #0d6efd;
         background: #e9ecef;
@@ -100,8 +102,7 @@ unset($_SESSION['error'], $_SESSION['success']);
                     <div class="col-md-6">
                         
                         <div class="file-drop-zone" id="dropZone">
-                            <input type="file" name="excel_file" id="fileInput" accept=".xlsx,.xls,.csv" required style="display: none;">
-                            <i class="bi bi-cloud-upload-fill hero-icon text-primary"></i>
+                            <input type="file" name="excel_file" id="fileInput" accept=".xlsx,.xls,.csv" required >                            
                             <p class="mt-2 mb-1">Glissez votre fichier ici</p>
                             <p class="text-muted small">ou <span class="text-primary" style="cursor: pointer;" onclick="document.getElementById('fileInput').click()">cliquez pour parcourir</span></p>
                             <div id="fileName" class="text-success small fw-semibold"></div>
