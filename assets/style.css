@@ -1,0 +1,42 @@
+body {        
+        min-height: 100vh;
+    }
+    .title-col{
+      color: #1A1A2E;
+      font-style: italic;
+    }
+    .card-custom {
+        border-radius: 1rem;
+        border: none;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    
+    .file-drop-zone {
+        border: 2px dashed #dee2e6;
+        border-radius: 0.5rem;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .text-primary{
+        font-size: 24px;
+        display: block;        
+    }
+    .file-drop-zone:hover {
+        border-color: #0d6efd;
+        background: #e9ecef;
+    }
+    
+    .col-chip {
+        display: inline-block;
+        background: #e9ecef;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+        margin: 0.25rem;
+    }
+    
+    .hero-icon {
+        font-size: 4rem;
+    }

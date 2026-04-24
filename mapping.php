@@ -4,13 +4,25 @@ if (empty($_SESSION['import'])) {
     header('Location: index.php');
     exit;
 }
+
+// Note: Plus besoin de require_once db.php car on utilise les données en session
+// Les colonnes DB sont déjà dans $_SESSION['import']['db_columns']
+
 $imp       = $_SESSION['import'];
 $headers   = $imp['headers'];
 $preview   = $imp['preview'];
 $dbColumns = $imp['db_columns'];
-$autoMap   = $imp['auto_map'];
+$autoMap   = $imp['auto_map'] ?? []; // Ajout d'une valeur par défaut
 $total     = $imp['total'];
 $table     = $imp['table'];
+
+// Sécurité supplémentaire : vérifier que la table existe toujours
+// Optionnel - si vous voulez vérifier en temps réel
+if (!empty($dbColumns) && count($dbColumns) === 0) {
+    $_SESSION['error'] = 'La table sélectionnée n\'existe plus ou n\'a pas de colonnes.';
+    header('Location: index.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -80,7 +92,7 @@ $table     = $imp['table'];
     
     .mapping-header {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr ;
+        grid-template-columns: 1fr 1fr 1fr;
         background: #e9ecef;
         padding: 0.75rem 1rem;
         font-weight: 600;
@@ -131,8 +143,6 @@ $table     = $imp['table'];
         align-items: center;
         justify-content: center;
     }
-    
-   
     
     .mapping-select {
         width: 100%;
@@ -203,7 +213,6 @@ $table     = $imp['table'];
       gap: 8px;
     }
     
-    
     .confirm-num {
         font-size: 1.5rem;
         font-weight: bold;        
@@ -235,10 +244,6 @@ $table     = $imp['table'];
         .arrow-col {
             display: none;
         }
-        
-       
-      
-
     }
 </style>
 </head>
@@ -247,7 +252,6 @@ $table     = $imp['table'];
 <div class="container">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-       
         <a href="index.php" class="btn btn-dark btn-sm">
             <i class="bi bi-arrow-left"></i> Recommencer
         </a>
@@ -257,7 +261,7 @@ $table     = $imp['table'];
     <div class="text-center mb-5">                
         <p class="text-dark-50">
             Fichier : <strong><?= htmlspecialchars($imp['filename']) ?></strong> — 
-            <strong class="text-info"><?= $total ?> ligne(s)</strong> à importer vers notre table 
+            <strong class="text-info"><?= $total ?> ligne(s)</strong> à importer vers la table 
             <code class="bg-dark text-white p-1 rounded"><?= htmlspecialchars($table) ?></code>
         </p>
     </div>
@@ -285,7 +289,7 @@ $table     = $imp['table'];
                 <div class="mapping-grid">
                     <div class="mapping-header">
                         <div>Colonnes de votre fichier Excel</div>                      
-                        <div>Colonnes de notre table <code><?= htmlspecialchars($table) ?></code></div>
+                        <div>Colonnes de la table <code><?= htmlspecialchars($table) ?></code></div>
                         <div>Exemple (1ère ligne)</div>
                     </div>
 
@@ -293,7 +297,7 @@ $table     = $imp['table'];
                     <?php $sample = $preview[0][$idx] ?? '—'; ?>
                     <div class="mapping-row <?= isset($autoMap[$idx]) ? 'mapped' : '' ?>">
                         <div class="excel-col">
-                            <span class="col-index"><?=$idx+1 ?></span>
+                            <span class="col-index"><?= $idx + 1 ?></span>
                             <span class="col-name"><?= htmlspecialchars($header ?: '(vide)') ?></span>
                         </div>                        
                         <div>
@@ -320,10 +324,10 @@ $table     = $imp['table'];
                 <!-- Action Buttons -->
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-outline-secondary" id="clearAll">
-                         Tout effacer
+                        <i class="bi bi-eraser"></i> Tout effacer
                     </button>
                     <button type="button" class="btn btn-outline-primary" id="autoFill">
-                         Re-mapper automatiquement
+                        <i class="bi bi-magic"></i> Re-mapper automatiquement
                     </button>
                 </div>
             </div>
@@ -359,29 +363,29 @@ $table     = $imp['table'];
         </div>
 
         <!-- Import Confirmation -->
-        <div class="import-confirm  card mt-5">
+        <div class="import-confirm card mt-5">
             <div class="confirm-info">
                 <div class="confirm-stat">
                     <div class="confirm-num"><?= $total ?></div>
                     <div class="confirm-label">
-                         Lignes à importer
+                        <i class="bi bi-database"></i> Lignes à importer
                     </div>
                 </div>
                 <div class="confirm-stat">
                     <div class="confirm-num" id="mappedCount"><?= $mappedCount ?></div>
                     <div class="confirm-label">
-                         Colonnes mappées
+                        <i class="bi bi-link"></i> Colonnes mappées
                     </div>
                 </div>
                 <div class="confirm-stat">
                     <div class="confirm-num"><?= count($dbColumns) ?></div>
                     <div class="confirm-label">
-                         Colonnes de notre table
+                        <i class="bi bi-table"></i> Colonnes de la table
                     </div>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary btn-lg mt-3" id="importBtn">
-                 Lancer l'import
+                <i class="bi bi-cloud-upload"></i> Lancer l'import
             </button>
         </div>
 
@@ -428,7 +432,7 @@ document.getElementById('mappingForm').addEventListener('submit', function(e) {
     }
     const btn = document.getElementById('importBtn');
     btn.disabled = true;
-    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Import en cours…';
+    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Import en cours...';
 });
 </script>
 

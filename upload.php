@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/db.php';
-require_once 'includes/functions.php';
+require_once 'includes/db.php';  // Changé : connexion MySQLi
+require_once 'includes/functions.php';  // Changé : fonctions converties
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');
@@ -74,8 +74,8 @@ if (empty($data['headers'])) {
     exit;
 }
 
-// Récupérer les colonnes de la table cible
-$dbColumns = getTableColumns($pdo, $tableName);
+// Récupérer les colonnes de la table cible avec MySQLi
+$dbColumns = getTableColumns($mysqli, $tableName);  // Changé : $pdo → $mysqli
 $autoMap   = autoMapColumns($data['headers'], $dbColumns);
 
 // Stocker en session pour la page de mapping
@@ -94,3 +94,4 @@ $_SESSION['import'] = [
 
 header('Location: mapping.php');
 exit;
+?>

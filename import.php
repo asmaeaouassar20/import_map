@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/db.php';
-require_once 'includes/functions.php';
+require_once 'includes/db.php'; // Nouveau fichier avec connexion MySQLi
+require_once 'includes/functions.php'; // Vos fonctions converties
 
 if (empty($_SESSION['import']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');
@@ -33,10 +33,17 @@ if (!file_exists($imp['filepath'])) {
     exit;
 }
 
+// Vérifier que la connexion MySQLi existe
+if (!isset($mysqli) || !$mysqli) {
+    $_SESSION['error'] = 'Erreur de connexion à la base de données.';
+    header('Location: index.php');
+    exit;
+}
+
 // Lancer l'import
 $startTime = microtime(true);
 $result = importData(
-    $pdo,
+    $mysqli,        // Changement: $pdo → $mysqli
     $imp['table'],
     $imp['filepath'],
     $cleanMapping,
