@@ -13,135 +13,11 @@ unset($_SESSION['error'], $_SESSION['success']);
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ImportFlow — Excel vers Base de Données</title>
+<title>algostyle— Excel vers Base de Données</title>
 <!-- Bootstrap 5 CSS + Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-<style>
-    :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    body {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        min-height: 100vh;
-    }
-    
-    .card-custom {
-        border-radius: 1.5rem;
-        border: none;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(10px);
-    }
-    
-    .card-custom .shadow {
-        border-radius: 1.5rem;
-    }
-    
-    .file-drop-zone {
-        border: 2px dashed #dee2e6;
-        border-radius: 1rem;
-        padding: 2rem;
-        text-align: center;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        background: #f8f9fa;
-    }
-    
-    .file-drop-zone:hover {
-        border-color: #667eea;
-        background: #f0f0ff;
-        transform: translateY(-2px);
-    }
-    
-    .file-drop-zone.dragover {
-        border-color: #667eea;
-        background: #e8e8ff;
-    }
-    
-    .btn-primary {
-        background: var(--primary-gradient);
-        border: none;
-        border-radius: 2rem;
-        padding: 0.75rem 2rem;
-        font-weight: 600;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-    }
-    
-    .col-chip {
-        display: inline-block;
-        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-        color: #667eea;
-        padding: 0.25rem 0.75rem;
-        border-radius: 2rem;
-        font-size: 0.875rem;
-        margin: 0.25rem;
-        font-family: monospace;
-        transition: all 0.2s;
-    }
-    
-    .col-chip:hover {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        transform: scale(1.05);
-    }
-    
-    .title-col {
-        font-weight: 600;
-        color: #4a5568;
-        margin-bottom: 0.5rem;
-        font-size: 0.875rem;
-    }
-    
-    .display-4 {
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    
-    .form-select, .form-control {
-        border-radius: 0.75rem;
-        border: 1px solid #e2e8f0;
-        transition: all 0.2s;
-    }
-    
-    .form-select:focus, .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-    
-    .form-check-input:checked {
-        background-color: #667eea;
-        border-color: #667eea;
-    }
-    
-    .alert {
-        border-radius: 1rem;
-        border: none;
-    }
-    
-    .info-bar {
-        background: white;
-        border-radius: 1rem;
-        padding: 1rem;
-    }
-    
-    @media (max-width: 768px) {
-        .card-body {
-            padding: 1.5rem !important;
-        }
-        
-        .display-4 {
-            font-size: 2rem;
-        }
-    }
-</style>
+<link rel="stylesheet" href="assets/style.css"  >
 </head>
 <body>
 
@@ -149,7 +25,7 @@ unset($_SESSION['error'], $_SESSION['success']);
     <!-- Header -->
     <div class="text-center mb-5">
         <h1 class="display-4 fw-bold">
-            ImportFlow
+            algostyle
         </h1>
         <p class="text-muted lead">Importez vos fichiers Excel vers votre base de données</p>
     </div>
@@ -181,13 +57,13 @@ unset($_SESSION['error'], $_SESSION['success']);
                     <!-- Upload Section -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">
-                            <i class="bi bi-file-earmark-excel"></i> Fichier à importer
+                             Fichier à importer
                         </label>
                         <div class="file-drop-zone" id="dropZone">
                             <i class="bi bi-cloud-upload" style="font-size: 2rem; color: #667eea;"></i>
-                            <input type="file" name="excel_file" id="fileInput" accept=".xlsx,.xls,.csv" required style="display: none;">
+                            <input type="file" name="excel_file" id="fileInput" accept=".xlsx,.xls,.csv" required hidden>
                             <p class="mt-2 mb-1">Glissez votre fichier ici</p>
-                            <p class="text-muted small">ou <span class="text-primary" style="cursor: pointer;" onclick="document.getElementById('fileInput').click()">cliquez pour parcourir</span></p>
+                            <p class="text-muted small">ou <span class="text-primary" style="cursor: pointer;" onclick="event.stopPropagation();document.getElementById('fileInput').click()">cliquez pour parcourir</span></p>
                             <div id="fileName" class="text-success small fw-semibold"></div>
                         </div>
                         <div class="mt-2">
@@ -200,7 +76,7 @@ unset($_SESSION['error'], $_SESSION['success']);
                     <!-- Table Selection -->
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">
-                            <i class="bi bi-table"></i> Sélectionnez une table de destination
+                             Sélectionnez une table de destination
                         </label>
                         <select name="table_name" id="tableSelect" class="form-select" required>
                             <option value="">— Sélectionner une table —</option>
@@ -218,18 +94,11 @@ unset($_SESSION['error'], $_SESSION['success']);
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="has_header" value="1" checked id="hasHeader">
                             <label class="form-check-label" for="hasHeader">
-                                <i class="bi bi-text-paragraph"></i> La première ligne contient les en-têtes
+                                 La première ligne contient les en-têtes
                             </label>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="skip_errors" value="1" id="skipErrors">
-                            <label class="form-check-label" for="skipErrors">
-                                <i class="bi bi-skip-forward"></i> Ignorer les lignes avec erreurs
-                            </label>
-                        </div>
-                    </div>
+                  
                 </div>
 
                 <!-- Submit Button -->
@@ -247,9 +116,7 @@ unset($_SESSION['error'], $_SESSION['success']);
         <div class="col-12">
             <div class="info-bar shadow-sm">
                 <div class="d-flex align-items-center gap-3 flex-wrap justify-content-center">
-                    <span><i class="bi bi-check-circle-fill text-success"></i> Formats supportés : XLSX, XLS, CSV</span>
-                    <span><i class="bi bi-database"></i> Import sécurisé</span>
-                    <span><i class="bi bi-shield-check"></i> Requêtes préparées</span>
+                    <span><i class="bi bi-check-circle-fill text-success"></i> Formats supportés : XLSX, XLS, CSV</span>                    
                 </div>
             </div>
         </div>
@@ -324,7 +191,7 @@ document.getElementById('tableSelect').addEventListener('change', function() {
                 previewDiv.innerHTML = `
                     <div class="p-3 bg-light rounded-3">
                         <div class="title-col">
-                            <i class="bi bi-columns"></i> Colonnes de la table <code>${escapeHtml(table)}</code> :
+                             Colonnes de la table <code>${escapeHtml(table)}</code> :
                         </div>
                         <div>
                             ${cols.map(c => `<span class="col-chip">${escapeHtml(c)}</span>`).join('')}

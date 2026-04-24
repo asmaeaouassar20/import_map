@@ -34,218 +34,8 @@ if (!empty($dbColumns) && count($dbColumns) === 0) {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-<style>
-    body {        
-        min-height: 100vh;
-        padding: 2rem 0;
-    }
-    
-    .card-custom {
-        border-radius: 1rem;
-        border: none;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        margin-bottom: 1.5rem;
-    }
-    
-    .step-badge {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        margin-bottom: 1rem;
-    }
-    
-    .automatch-banner {
-        background: #d1fae5;
-        border-left: 4px solid #10b981;
-        padding: 0.75rem 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .automatch-icon {
-        background: #10b981;
-        color: white;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.875rem;
-    }
-    
-    .mapping-grid {
-        background: #f8f9fa;
-        border-radius: 0.75rem;
-        overflow: hidden;
-        margin-bottom: 1.5rem;
-    }
-    
-    .mapping-header {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        background: #e9ecef;
-        padding: 0.75rem 1rem;
-        font-weight: 600;
-        border-bottom: 2px solid #dee2e6;
-    }
-    
-    .mapping-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid #dee2e6;
-        transition: background 0.2s;
-    }
-    
-    .mapping-row:hover {
-        background: white;
-    }
-    
-    .mapping-row.mapped {
-        background: #f0fdf4;
-    }
-    
-    .excel-col {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .col-index {
-        background: #1A1A2E;
-        color: white;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 0.875rem;
-    }
-    
-    .col-name {
-        font-weight: 500;
-    }
-    
-    .arrow-col {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .mapping-select {
-        width: 100%;
-        padding: 0.5rem;
-        border: 1px solid #dee2e6;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-    }
-    
-    .sample-value {
-        background: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
-        font-family: monospace;
-        font-size: 0.875rem;
-        display: inline-block;
-    }
-    
-    .table-scroll {
-        overflow-x: auto;
-        max-height: 400px;
-        overflow-y: auto;
-    }
-    
-    .preview-table {
-        width: 100%;
-        font-size: 0.875rem;
-    }
-    
-    .preview-table th {
-        background: #f8f9fa;
-        padding: 0.75rem;
-        border-bottom: 2px solid #dee2e6;
-        position: sticky;
-        top: 0;
-        background: white;
-    }
-    
-    .preview-table td {
-        padding: 0.5rem 0.75rem;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .row-num {
-        background: #f8f9fa;
-        font-weight: 500;
-        color: #6c757d;
-    }
-    
-    .import-confirm {
-        background: white;
-        border-radius: 1rem;
-        padding: 1.5rem;        
-        bottom: 1rem;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2);     
-    }
-    
-    .confirm-info {
-        display: flex;
-        gap: 2rem;
-        flex-wrap: wrap;
-        flex-direction: column;
-    }
-    
-    .confirm-stat{
-      display: flex;
-      align-items:center;
-      gap: 8px;
-    }
-    
-    .confirm-num {
-        font-size: 1.5rem;
-        font-weight: bold;        
-    }
-    
-    .confirm-label {
-        display: block;
-        font-size: 0.875rem;
-        color: #6c757d;
-    }
-    
-    @media (max-width: 768px) {
-        .mapping-header, .mapping-row {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-        }
-        
-        .mapping-header {
-            display: none;
-        }
-        
-        .mapping-row {
-            border: 1px solid #dee2e6;
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            background: white;
-        }
-        
-        .arrow-col {
-            display: none;
-        }
-    }
-</style>
+<link rel="stylesheet" href="assets/style.css"  >
+
 </head>
 <body>
 
@@ -324,10 +114,10 @@ if (!empty($dbColumns) && count($dbColumns) === 0) {
                 <!-- Action Buttons -->
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-outline-secondary" id="clearAll">
-                        <i class="bi bi-eraser"></i> Tout effacer
+                         Tout effacer
                     </button>
                     <button type="button" class="btn btn-outline-primary" id="autoFill">
-                        <i class="bi bi-magic"></i> Re-mapper automatiquement
+                         Re-mapper automatiquement
                     </button>
                 </div>
             </div>
@@ -368,19 +158,19 @@ if (!empty($dbColumns) && count($dbColumns) === 0) {
                 <div class="confirm-stat">
                     <div class="confirm-num"><?= $total ?></div>
                     <div class="confirm-label">
-                        <i class="bi bi-database"></i> Lignes à importer
+                         Lignes à importer
                     </div>
                 </div>
                 <div class="confirm-stat">
                     <div class="confirm-num" id="mappedCount"><?= $mappedCount ?></div>
                     <div class="confirm-label">
-                        <i class="bi bi-link"></i> Colonnes mappées
+                        Colonnes mappées
                     </div>
                 </div>
                 <div class="confirm-stat">
                     <div class="confirm-num"><?= count($dbColumns) ?></div>
                     <div class="confirm-label">
-                        <i class="bi bi-table"></i> Colonnes de la table
+                        Colonnes de la table
                     </div>
                 </div>
             </div>
