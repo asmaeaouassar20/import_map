@@ -99,7 +99,7 @@ function readExcelPreview(string $filePath, bool $hasHeader = true): array {
     $total = count($rows);
     $headers = $hasHeader ? array_map('trim', $rows[0]) : range(1, count($rows[0]));
     $dataRows = $hasHeader ? array_slice($rows, 1) : $rows;
-    $preview = array_slice($dataRows, 0, 5);
+    $preview = $dataRows;
 
     return [
         'headers' => $headers,
@@ -156,21 +156,114 @@ function readAllRows(string $filePath, bool $hasHeader = true): array {
     return $hasHeader ? array_slice($rows, 1) : $rows;
 }
 
+
+
 /**
- * Tente un mapping automatique entre colonnes Excel et colonnes DB
- * (correspondance par similarité de noms, insensible à la casse)
+ * Mapping automatique intelligent des colonnes entre un fichier Excel et une table MySQL.
+ * 
+ * Cette fonction tente de faire correspondre automatiquement les colonnes du fichier Excel
+ * avec les colonnes de la base de données, même en cas de différences mineures :
+ * - accents (marque vs mark)
+ * - majuscules/minuscules
+ * - caractères spéciaux, underscores, espaces
+ * - fautes de frappe légères ou abréviations
+ * 
+ * Exemples de rapprochements possibles :
+ *   "mark"      → "marque"
+ *   "Prix TTC"  → "prix"
+ *   "nom_client"→ "client_nom"
+ *   "quantite"  → "qty"
+ *
+ * @param array $excelHeaders  Liste des en-têtes du fichier Excel
+ * @param array $dbColumns     Liste des colonnes de la table MySQL
+ * @return array               Tableau associatif [index_col_excel => nom_colonne_db]
  */
-function autoMapColumns(array $excelHeaders, array $dbColumns): array {
-    $mapping = [];
+function autoMapColumns(array $excelHeaders, array $dbColumns): array
+{
+    $mapping = [];  // mapping final => [index_colonne_excel => nom_colonne_db]  :  exemple : $mapping = [0 => 'client_nom', 1 => 'prix', 2 => 'qty' ];
+    $usedDbCols = [];        // Permet d'éviter qu'une même colonne DB soit mappée plusieurs fois
+
+    /**
+     * Fonction de normalisation pour rendre les comparaisons plus robustes.
+     * Elle transforme une chaîne en une forme simplifiée :
+     * - Minuscules
+     * - Suppression des accents
+     * - Suppression de tous les caractères non alphanumériques
+     */
+    $normalize = function(string $str): string {
+        // Conversion en minuscules avec support UTF-8
+        $str = mb_strtolower($str, 'UTF-8');
+        
+        // Suppression des accents (ex: é → e, ç → c)
+        $str = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $str);
+        
+        // Suppression de tout ce qui n'est pas lettre ou chiffre
+        // (espaces, underscores, tirets, points, virgules, etc.)
+        $str = preg_replace('/[^a-z0-9]/u', '', $str);
+        
+        return $str;
+    };
+
+    // Pré-calcul de la version normalisée de toutes les colonnes de la base de données
+    // pour éviter de recalculer à chaque itération
+    $normalizedDb = [];
+    foreach ($dbColumns as $col) {
+        $normalizedDb[$col] = $normalize($col);
+    }
+
+    // Parcours de chaque colonne du fichier Excel
     foreach ($excelHeaders as $idx => $header) {
-        $normalizedHeader = strtolower(trim($header));
-        foreach ($dbColumns as $col) {
-            if (strtolower($col) === $normalizedHeader) {
-                $mapping[$idx] = $col;
-                break;
+        
+        // On ignore les colonnes vides
+        if (empty(trim($header))) {
+            continue;
+        }
+
+        $normHeader = $normalize($header);   // Version normalisée de l'en-tête Excel
+        $bestMatch  = null;                  // Meilleure correspondance trouvée
+        $bestScore  = 0;                     // Score de similarité le plus élevé
+
+        // On compare avec chaque colonne de la table MySQL
+        foreach ($dbColumns as $dbCol) {
+            
+            // Si cette colonne DB est déjà mappée à une autre colonne Excel → on passe
+            if (in_array($dbCol, $usedDbCols)) {
+                continue;
+            }
+
+            $normDb = $normalizedDb[$dbCol];
+
+            // === 1. Correspondance EXACTE après normalisation (meilleur cas) ===
+            if ($normHeader === $normDb) {
+                $bestMatch = $dbCol;
+                $bestScore = 100;
+                break;  // car on n'a pas besoin de chercher plus loin
+            }
+
+            // === 2. Calcul de similarité avec similar_text() ===
+            // Retourne un pourcentage de similarité entre 0 et 100
+            similar_text($normHeader, $normDb, $percent);
+
+            // === 3. Bonus de similarité si un mot est contenu dans l'autre ===
+            // Exemple : "nomclient" contient "nom" → on booste le score
+            if (str_contains($normHeader, $normDb) || str_contains($normDb, $normHeader)) {
+                $percent = max($percent, 85);
+            }
+
+            // On garde la meilleure correspondance si elle dépasse le seuil minimum
+            if ($percent > $bestScore && $percent >= 70) {   // Seuil recommandé : 70%
+                $bestScore = $percent;
+                $bestMatch = $dbCol;
             }
         }
+
+        // Si on a trouvé une correspondance acceptable, on l'enregistre
+        if ($bestMatch !== null) {
+            $mapping[$idx] = $bestMatch;
+            $usedDbCols[] = $bestMatch;   // Marquer cette colonne DB comme utilisée
+        }
     }
+
     return $mapping;
 }
 

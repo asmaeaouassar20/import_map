@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'includes/db.php';  // Changé : connexion MySQLi
-require_once 'includes/functions.php';  // Changé : fonctions converties
+require_once 'includes/db.php';  
+require_once 'includes/functions.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');

@@ -126,7 +126,7 @@ if (!empty($dbColumns) && count($dbColumns) === 0) {
         <!-- Preview Card -->
         <div class="card card-custom">
             <div class="card-body p-4">                
-                <h3 class="card-title h4 mb-3">Aperçu des données (5 premières lignes)</h3>
+                <h3 class="card-title h4 mb-3">Aperçu des données </h3>
                 <div class="table-scroll">
                     <table class="preview-table table table-sm table-hover">
                         <thead>
